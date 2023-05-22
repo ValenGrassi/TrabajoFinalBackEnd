@@ -1,0 +1,8 @@
+<h1>Productos</h1>
+{{#if hayProductos}}
+    <ul>{{#each productos}}
+        <li>{{this.title}}: ${{this.price}}, stock: {{this.stock }}u. </li>
+    {{/each}}</ul>
+    {{else}}
+No hay productos para mostrar
+{{/if}}

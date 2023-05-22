@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Time Products</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    
+<h1>Creá tu propio producto!</h1>
+    nombre: <input type="text" id="inputNombre">
+    precio: <input type="text" id="inputPrecio">
+    stock: <input type="text" id="inputStock">
+    <button type="submit" id="submitButton">Enviar</button>
+    <br><br>
+    <div id="divProductos"><ul>{{#each productos}}
+        <li>{{this.title}}: ${{this.price}}, stock: {{this.stock }}u. </li>
+    {{/each}}</ul>
+</div>
+    
+    <script>
+        const socket = io()
+
+        socket.emit("refrescar")
+        socket.on("actualizar", productos => {
+            const div = document.querySelector("#divProductos")
+            div.innerHTML = listaProductos(productos)
+        })
+
+        function listaProductos(productos) {         
+            return JSON.stringify(productos, null, 2)
+        }
+
+        const botonEnviar = document.querySelector("#submitButton")
+        botonEnviar.addEventListener("click", e => {
+            const prod = {
+                title: document.querySelector("#inputNombre").value,
+                price: document.querySelector("#inputPrecio").value,
+                stock: document.querySelector("#inputStock").value
+            }
+            socket.emit("newProduct", prod)
+        })
+
+
+    </script>    
+</body>
+</html>
+
+{{!-- <h1>Productos</h1>
+{{#if hayProductos}}
+    <ul>{{#each productos}}
+        <li>{{this.title}}: ${{this.price}}, stock: {{this.stock }}u. </li> <button></button>
+    {{/each}}</ul>
+{{/if}} --}}
