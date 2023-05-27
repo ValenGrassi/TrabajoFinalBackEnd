@@ -7,7 +7,7 @@ const routerWeb = Router();
 routerWeb.get("/", async (req,res) => {
     const productos = await productManager.encontrar()
     res.render("home", {hayProductos: productos.length > 0, productos});
-    console.log(productos)
+    req.logger.info(productos)
 })
 
 
@@ -30,7 +30,7 @@ routerWeb.get("/carts/:cid", async(req,res,next)=>{
         const cartId = req.params.cid;
         const carrito = await cartManager.encontrarUnoConIdyPopular(cartId)
         const productoCarrito = carrito.products
-        console.log(carrito)
+        req.logger.info(carrito)
         res.render("carts",{productoCarrito})
     } catch (error) {
         next(error)

@@ -4,6 +4,7 @@ export async function postSessions(req,res,next){
     const {username, password} = req.body;
     try {
 	    const token = await authenticationService.login({username,password})
+        req.logger.info("usuario logueado")
         res.cookie("authToken", token, {signed: true, httpOnly: true})
         res.status(201).json({status: "success"})
     } catch (error) {

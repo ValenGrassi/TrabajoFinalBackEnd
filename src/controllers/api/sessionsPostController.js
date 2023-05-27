@@ -9,14 +9,13 @@ export async function registerPostController(req, res, next) {
         const email = req.body.email
         // const existe = await userManager.encontrarUnoConValor({email: email})
         const existe = await userRepository.encontrarUnoConValor({email:email}, { returnDto: true })
-        console.log({"error":existe})
-        
+        req.logger.error(existe)
         if(existe) {
             return new Error(errores.EXISTING_MAIL)
         }
 
         const datosFuturoUsuario = new DatosFuturoUsuario(req.body).toDto()
-        console.log(datosFuturoUsuario)
+        req.logger.info(datosFuturoUsuario)
         const usuarioRegistrado = await usuariosService.registrar(datosFuturoUsuario)
         return res.status(201).send({status: "success", message: "Usuario Registrado!"})
     }
@@ -38,7 +37,7 @@ export async function loginPostController(req,res,next){
                 age: user.edad,
                 rol: user.rol
             };
-            console.log("rol del usuario: " + user.rol)
+            req.logger.info("rol del usuario: " + user.rol)
         }}
 
         if(!user && email == "adminCoder@coder.com" && password == "adminCod3r123"){
@@ -48,7 +47,8 @@ export async function loginPostController(req,res,next){
             password: password,
             rol: rol,
             }
-            console.log("rol del usuario: " + rol)
+            req.logger.info("rol del usuario: " + rol)
+
         }       
         
         if(!user && email != "adminCoder@coder.com" && password != "adminCod3r123"){
@@ -57,6 +57,6 @@ export async function loginPostController(req,res,next){
         res.sendStatus(201)
     } catch (error) {
         next(error)
-        console.log(error)
+        req.logger.fatal(error)
     }
 }

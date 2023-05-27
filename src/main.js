@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser"
 import routerViews from "./routers/routerViews.js";
 import MongoStore from "connect-mongo"
 import session from "express-session"
+import { logger, winstonLogger } from "./utils/customLogger.js"
 
 
 export const app = express()
@@ -29,10 +30,14 @@ app.use(session({
 
 app.use(cookieParser(COOKIE_SECRET))
 
+app.use(logger)
+
 app.use("/api", apiRouter)
 app.use("/", routerViews)
 
 
 await mongoose.connect(MONGODB_CNX_STR)
+winstonLogger.info(`conectado a mongo en ${MONGODB_CNX_STR}`)
+winstonLogger.http(`conectado al puerto ${PORT}`)
 
-app.listen(PORT, () => {console.log(`conectado a ${PORT}`)})
+app.listen(PORT)

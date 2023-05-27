@@ -12,3 +12,4 @@ export const CREDENCIALES_EMAIL = {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
 }
+export const NODE_ENV = process.env.NODE_ENV || "development"

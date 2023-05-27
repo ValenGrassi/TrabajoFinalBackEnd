@@ -27,6 +27,7 @@
     "mongoose": "^7.0.2",
     "mongoose-paginate-v2": "^1.7.1",
     "nodemailer": "^6.9.2",
-    "nodemon": "^2.0.21"
+    "nodemon": "^2.0.21",
+    "winston": "^3.9.0"
   }
 }

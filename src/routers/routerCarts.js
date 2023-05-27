@@ -50,7 +50,7 @@ routerCarts.delete("/:cid/product/:pid", Usuario, async(req,res,next) => {
         const idCarrito = req.params.cid;
         const carrito = await cartManager.encontrarUnoConId(idCarrito)
         const encontrar = carrito.products.find(p => p.product == idProducto)
-        console.log(encontrar)
+        req.logger.debug(encontrar)
         const carritoNuevo = await cartManager.actualizarUnoPull(idCarrito, encontrar)
         res.status(201).json(carritoNuevo)
     } catch (error) {
@@ -62,7 +62,7 @@ routerCarts.put("/:cid/purchase", Usuario, async(req,res,next) => {
     try {
         const idCarrito = req.params.cid;
         const carrito = await cartManager.encontrarUnoConId(idCarrito)
-        console.log("carrito comprado " + carrito)
+        req.logger.info("carrito comprado " + carrito)
         const nuevo = []
         const carritoNuevo = await cartManager.actualizarUnoPull(idCarrito, nuevo)
         if(carritoNuevo){
@@ -70,7 +70,7 @@ routerCarts.put("/:cid/purchase", Usuario, async(req,res,next) => {
         }
         
         const info = await emailService.send(req.session.user.email, mensaje)
-        console.log(info)
+        req.logger.info(info)
         
         res.status(201).json(carritoNuevo)
     } catch (error) {

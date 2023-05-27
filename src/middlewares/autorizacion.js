@@ -1,4 +1,4 @@
-import { errores } from "../errors/errorHandler"
+import { errores } from "../errors/errorHandler.js"
 
 export function Administrador(req,res,next){
     const user = req.session.user
