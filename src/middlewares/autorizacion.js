@@ -15,3 +15,17 @@ export function Usuario(req,res,next){
     }
     next()
 }
+
+export function UsuarioPremium(req,res,next){
+    const user = req.session.user
+    if(user.rol != "usuario" && user.rol != "premium"){
+        throw new Error(errores.NOT_AUTHORIZED)
+    } 
+}
+
+export function Premium(req,res,next){
+    const user = req.session.user
+    if(user.rol != "admin" && user.rol != "premium"){
+        throw new Error(errores.NOT_AUTHORIZED)
+    }
+}

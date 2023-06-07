@@ -12,6 +12,14 @@ routerViews.get("/login", (req,res,next) => {
     res.render("login", {pageTitle: "Login"})
 })
 
+routerViews.get("/token",(req,res,next) =>{
+    res.render("token", {pageTitle: "Token"})
+})
+
+routerViews.get("/recuperar", (req,res,next) => {
+    res.render("recuperar", {pageTitle: "Recuperar"})
+})
+
 routerViews.get("/", autenticacionRedirect, (req,res,next) => {
     res.redirect("/user")
 })

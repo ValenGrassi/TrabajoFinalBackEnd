@@ -11,12 +11,22 @@ class Criptografia {
         return bcrypt.compareSync(actual, almacenada)
     }
 
-    generarToken(dato) {
-        jwt.sign(dato, JWT_SECRET, {expiresIn: "1h"})
+    generarToken(dato, ttl = "24h") {
+        try {
+            const payload = jwt.sign(dato, JWT_SECRET, {expiresIn: ttl})
+            return payload
+        } catch (error) {
+            next(error)
+        }
     }
 
     decodificarToken(token) {
-        return jwt.verify(token, JWT_SECRET)
+        try {
+            const payload = jwt.verify(token, JWT_SECRET)
+            return payload["dato"]
+        } catch (error) {
+            throw new Error("expirado")
+        }
     }
 }
 

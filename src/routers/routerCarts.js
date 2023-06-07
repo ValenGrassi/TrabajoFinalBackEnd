@@ -3,7 +3,8 @@ import { cartGetController } from "../controllers/api/cartGetController.js";
 import { cartPostController } from "../controllers/api/cartPostController.js";
 import { cartManager } from "../dao/cartManager.js";
 import  {productManager}  from "../dao/productManager.js";
-import { Usuario } from "../middlewares/autorizacion.js";
+import { errores } from "../errors/errorHandler.js";
+import { Usuario, UsuarioPremium } from "../middlewares/autorizacion.js";
 import { DatosFuturoCarrito } from "../models/DatosFuturoCarrito.js";
 import { Ticket } from "../models/Ticket.js";
 import { emailService } from "../services/email.service.js";
@@ -24,12 +25,16 @@ routerCarts.get("/:cid", async (req,res,next) => {
     }
 })
 
-routerCarts.post("/:cid/product/:pid", Usuario, async(req,res,next) => {
+routerCarts.post("/:cid/product/:pid", UsuarioPremium, async(req,res,next) => {
     try {
         const idProducto = req.params.pid;
         const idCarrito = req.params.cid;
+        const user = req.session.user;
         const carrito = await cartManager.encontrarUnoConId(idCarrito)
         const producto = await productManager.encontrarUnoConId(idProducto)
+        if(user.rol == "premium" && producto.owner == user.mail){
+            throw new Error(errores.NOT_AUTHORIZED)
+        }
         const quantity = 1
         const productoExiste = await carrito.products.find(c => c.product === idProducto)
         const nuevoCarrito = new DatosFuturoCarrito(producto, quantity)

@@ -14,6 +14,12 @@ class UserRepository{
         if(returnDto) return dto
         else return new DatosFuturoUsuario(dto)
     }
+
+    async actualizarUnoConValor(user, valor, {returnDto} = {returnDto: false}){
+        const dto = await userManager.actualizarUno(user, valor)
+        if(returnDto) return dto
+        else return new DatosFuturoUsuario(dto)
+    }
 }
 
 export const userRepository = new UserRepository(

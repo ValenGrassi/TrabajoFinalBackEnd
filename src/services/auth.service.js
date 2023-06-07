@@ -15,7 +15,7 @@ class AuthenticationService {
             criptografiador.generarToken(user)
             return user
         } catch (error) {
-            next(error)
+            throw new Error(errores.INCORRECT_CREDENTIALS)
         }
         
     }

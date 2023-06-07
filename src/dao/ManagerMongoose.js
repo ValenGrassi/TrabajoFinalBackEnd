@@ -40,6 +40,10 @@ export class ManagerMongoose {
     async actualizarUnoPush(id,cambio){
         return await this.collection.findOneAndUpdate({"_id": id},{$push: {"products": cambio}})
     }
+
+    async actualizarUno(id, cambio){
+        return await this.collection.updateOne(id, cambio).lean()
+    }
     
     async actualizarUnoConCódigo(codigo, cambio){
         return await this.collection.findOneAndUpdate({code: codigo},cambio)

@@ -3,14 +3,14 @@ import { productosGetController } from "../controllers/api/productsGetController
 import { productosPostController } from "../controllers/api/productsPostController.js";
 import { productManager } from "../dao/productManager.js";
 import { autenticacionRedirect } from "../middlewares/autenticacion.js";
-import { Administrador, Usuario } from "../middlewares/autorizacion.js";
+import { Administrador, Premium, Usuario } from "../middlewares/autorizacion.js";
 
 export const routerProducts = Router();
 
-routerProducts.post("/", autenticacionRedirect, Administrador, productosPostController);
+routerProducts.post("/", autenticacionRedirect, Premium, productosPostController);
 routerProducts.get("/", Usuario, productosGetController)
 
-routerProducts.put("/:code", Administrador, async (req,res,next) => {
+routerProducts.put("/:code", Premium, async (req,res,next) => {
         try{
             const cambio = req.body
             const codigoProducto = req.params.code;

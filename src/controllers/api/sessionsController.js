@@ -60,3 +60,12 @@ export async function loginPostController(req,res,next){
         req.logger.fatal(error)
     }
 }
+
+export async function tokenPostController(req,res,next){
+    try {
+        const creado = await usuariosService.obtenerTokenParaReestablecerContrasenia(req.body)
+        res.status(201).send(creado)
+    } catch (error) {
+        next(error)
+    }
+}
