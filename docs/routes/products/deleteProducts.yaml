@@ -1,0 +1,21 @@
+paths:
+  /api/products/{code}:
+    delete:
+      summary: Deletes the product with given code
+      tags:
+        - Products
+      parameters:
+      - name: code
+        in: path
+        description: path parameter takes the product code
+        required: true
+        type: string
+      responses:
+        "201":
+          description: The product with given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "404":
+          description: Product not found Error

@@ -1,0 +1,31 @@
+# Cart
+components:
+  schemas:
+    Cart:
+      type: object
+      required:
+        - id
+        - products
+        - totalPrice
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of the cart.
+        products:
+          type: array
+          description: The products of the cart.
+        totalPrice:
+          type: number
+          description: The price of the total cart.
+      example:
+         id: 1351as5dasdasd3a135s
+         products:
+          -0: 
+            title: mouse
+            stock: 14
+            price: 48
+          1: 
+            title: mouse
+            stock: 14
+            price: 48
+         totalPrice: 166

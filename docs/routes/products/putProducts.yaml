@@ -1,0 +1,30 @@
+paths:
+  /api/products/{code}:
+    put:
+      summary: Change the product with given code
+      tags:
+        - Products
+      requestBody:
+        required: true
+        description: The change in the body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+            example:
+              name: aaa
+      parameters:
+      - name: code
+        in: path
+        description: path parameter takes the product code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The product with given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "404":
+          description: Product not found Error

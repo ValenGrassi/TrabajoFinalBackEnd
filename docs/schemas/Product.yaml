@@ -1,0 +1,58 @@
+# Product
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - status
+        - thumbnail
+        - title
+        - description
+        - price
+        - code
+        - stock
+        - category
+        - owner
+        - id
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of the product.
+        status:
+          type: string
+          description: The status of the product.
+        thumbnail:
+          type: string
+          description: The URL of the product thumbnail.
+        title:
+          type: string
+          description: The title of the product.
+        description:
+          type: string
+          description: The description of the product.
+        price:
+          type: number
+          description: The price of the product.
+        code:
+          type: number
+          description: The code of the product.
+        stock:
+          type: number
+          description: The stock of the product.
+        category:
+          type: string
+          description: The category of the product.
+        owner:
+          type: string
+          description: The owner of the product.
+      example:
+         id: 4ughd7d145as6d5a46sda
+         status: true
+         thumbnail: sin imagen
+         title: chair
+         description: Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support
+         price: 8
+         code: 897
+         stock: 78
+         category: sin categoria
+         owner: admin
