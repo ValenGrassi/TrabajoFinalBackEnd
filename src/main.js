@@ -11,6 +11,7 @@ import { logger, winstonLogger } from "./utils/customLogger.js"
 import { swaggerOptions } from "./utils/swaggerOptions.js"
 import swaggerUi from "swagger-ui-express"
 import swaggerJsdoc from "swagger-jsdoc"
+import multer from "multer"
 
 
 export const app = express()
@@ -19,6 +20,7 @@ app.engine("handlebars", engine())
 app.set("views", "./views")
 app.set("view engine", "handlebars")
 app.use(express.static("public"))
+
 
 app.use(session({
     store: new MongoStore({
@@ -33,6 +35,36 @@ app.use(session({
 app.use(cookieParser(COOKIE_SECRET))
 
 app.use(logger)
+const storage = multer.diskStorage({
+    destination: "public/documents",
+    filename: (req,file,next) => {
+        next(null, file.originalname)
+    }
+})
+
+const profile = multer.diskStorage({
+    destination: "public/profiles",
+    filename: (req,file,next) => {
+        next(null, file.originalname)
+    }
+})
+
+const products = multer.diskStorage({
+    destination: "public/products",
+    filename: (req,file,next) => {
+        next(null, file.originalname)
+    }
+})
+
+app.use(multer({
+    storage: profile,products,storage,
+}).fields(
+    [
+        {name:"profile"}, 
+        {name: "document"}, 
+        {name: "products"}
+    ]
+    ))
 
 app.use("/api", apiRouter)
 app.use("/", routerViews)

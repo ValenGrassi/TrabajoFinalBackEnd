@@ -3,5 +3,15 @@
 <p>{{user.age}}</p>
 <p>Tu rol es: {{user.rol}} </p>
 <a href="/api/sessions/logout"><button>Salir</button></a>
+<br>
+<p>Upload profile, documents or products images</p>
+<form action="/api/users/{{user.id}}/documents" method="post" enctype="multipart/form-data">
+    <input type="file" name="profile"> Profile img <br>
+    <input type="file" name="document"> Document img <br>
+    <input type="file" name="product"> Product img <br>
+    <button type="submit">
+        Upload
+    </button>
+</form>
 
 <script src="/js/user.js"></script>

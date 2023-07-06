@@ -7,7 +7,7 @@ import { usuariosService } from "../../services/users.service.js"
 export async function registerPostController(req, res, next) {
     try {
         const email = req.body.email
-        // const existe = await userManager.encontrarUnoConValor({email: email})
+        const fecha = new Date().toLocaleDateString()
         const existe = await userRepository.encontrarUnoConValor({email:email}, { returnDto: true })
         req.logger.error(existe)
         if(existe) {
@@ -16,6 +16,7 @@ export async function registerPostController(req, res, next) {
 
         const datosFuturoUsuario = new DatosFuturoUsuario(req.body).toDto()
         req.logger.info(datosFuturoUsuario)
+        datosFuturoUsuario.last_connection = fecha
         const usuarioRegistrado = await usuariosService.registrar(datosFuturoUsuario)
         return res.status(201).send({status: "success", message: "Usuario Registrado!"})
     }

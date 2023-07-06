@@ -1,6 +1,7 @@
 import {Router} from "express"
 import { productManager } from "../dao/productManager.js";
 import { autenticacionLogin, autenticacionRedirect } from "../middlewares/autenticacion.js";
+import { userRepository } from "../repositories/usersRepository.js";
 
 const routerViews = Router()
 
@@ -24,7 +25,9 @@ routerViews.get("/", autenticacionRedirect, (req,res,next) => {
     res.redirect("/user")
 })
 
-routerViews.get("/user",autenticacionLogin, (req,res,next) => {
+routerViews.get("/user",autenticacionLogin, async (req,res,next) => {
+    const user = await userRepository.encontrarUnoConValor({email:req.session.user.email}, {returnDto: true})
+    req.session.user.id = user._id
     res.render("user", {pageTitle: "User", user: req.session.user})
 })
 

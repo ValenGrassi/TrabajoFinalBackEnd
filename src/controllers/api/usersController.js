@@ -10,7 +10,6 @@ export async function postUsers(req, res,next){
     const token = criptografiador.generarToken(user)
     res.cookie("authToken", token, {expiresIn: "1h", httpOnly: true})
     res.status(201).json(user)
-
 }
 
 export async function getUsers(req,res,next){
@@ -40,14 +39,31 @@ export async function premiumUsers(req,res,next){
         if(!user){
             throw new Error(errores.INCORRECT_CREDENTIALS)
         }
-        if(user.rol == "usuario"){
+        if(user.rol == "usuario" && user.documents){
             user.rol = "premium"
-        } else {
+        }else if(user.rol == "premium"){
             user.rol = "usuario"
+        } else {
+            throw new Error("el perfil no tiene ningun documento")
         }
         console.log(user)
         const userCambiado = await userRepository.actualizarUnoConValor({_id:idBuscado}, user, {returnDto: true})
         res.status(201).send(`${user.email} cambió de rol`)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export async function postDocuments(req,res,next){
+    try {
+        var files
+        const user = req.session.user;
+        if(req.files.document){ files = req.files.document[0] }
+        if(req.files.profile){ files = req.files.profile[0]}
+        if(req.files.product){ files = req.files.product[0]}
+        const {originalname, path} = files
+        const userCambiado = await usuariosService.actualizarDocumentos(user, originalname, path)
+        res.status(201).send(`${user.email} subió un documento.`)
     } catch (error) {
         next(error)
         console.log(error)

@@ -7,7 +7,9 @@ const userSchema = new Schema({
         email: {type: String, required: true, index: true},
         edad: {type: Number},
         password: {type: String, required: true},
-        rol: {type: String, default: "usuario"}
+        rol: {type: String, default: "usuario"},
+        last_connection: {type: String, required: true},
+        documents: {type: Array}
     })    
 
 export const userManager = new ManagerMongoose("users", userSchema)

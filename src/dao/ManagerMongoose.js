@@ -25,14 +25,6 @@ export class ManagerMongoose {
         return await this.collection.findById(id).populate("products.product")
     }
 
-    async reemplazarUno(id,nuevo){
-        return await this.collection.findOneAndReplace({"_id": id}, {nuevo})
-    }
-
-    async agregarCarrito(id,cambio){
-        return await this.collection.findOneAndUpdate({"_id": id}, {$push: {cambio}})
-    }
-    
     async actualizarUnoPull(id,cambio){
         return await this.collection.findOneAndUpdate({"_id": id},{$pull: {"products": cambio}})
     }
@@ -45,16 +37,9 @@ export class ManagerMongoose {
         return await this.collection.updateOne(id, cambio).lean()
     }
     
-    async actualizarUnoConCódigo(codigo, cambio){
-        return await this.collection.findOneAndUpdate({code: codigo},cambio)
-    }
 
-    async borrarUnoConCódigo(codigo){
-        return await this.collection.findOneAndRemove(codigo)
-    }
-
-    async sumarProducto(id){
-        return await this.collection.findOne({"carts.products.product": id})
+    async eliminarUno(id){
+        return await this.collection.findOneAndDelete(id)
     }
 
     async paginar(criterio, opciones){

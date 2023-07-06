@@ -1,3 +1,5 @@
+import { cartManager } from "../../dao/cartManager.js"
+
 export async function cartGetController(req,res,next){
     try {
         const carritos = await cartManager.encontrar()

@@ -56,6 +56,26 @@ class UsuariosService{
         console.log(actualizado)
         return actualizado
     }
+
+    async actualizarUltimaVez(user){
+        const fecha = new Date().toLocaleDateString()
+        user.last_connection = fecha
+        const actualizado = await userRepository.actualizarUnoConValor({email: user.email}, user, {returnDto: true})
+        return actualizado
+    }
+
+    async actualizarDocumentos(user, name, link){
+        const userDTO = await userRepository.encontrarUnoConValor({email: user.email}, {returnDto: true})
+        if(userDTO.documents){
+            userDTO.documents.push({name: name, reference: link})
+        } else{
+            userDTO.documents = []
+            userDTO.documents.push({name: name, reference: link})
+        }
+        console.log(userDTO)
+        const actualizado = await userRepository.actualizarUnoConValor({email: user.email}, userDTO, {returnDto: true})
+        return actualizado
+    }
 }
 
 export const usuariosService = new UsuariosService()

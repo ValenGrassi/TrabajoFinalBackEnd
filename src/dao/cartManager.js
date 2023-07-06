@@ -2,17 +2,8 @@ import { Schema } from "mongoose"
 import { ManagerMongoose } from "./ManagerMongoose.js"
 
 const cartSchema = new Schema({
-    products: {
-        type: [
-            {
-                product: {
-                    type: Schema.Types.ObjectId,
-                    ref: "products"
-                }
-            }
-        ],
-        default: []
-    },
+    products: {type: Array},
+    totalPrice: {type: Number}
 })
 
 export const cartManager = new ManagerMongoose("carts", cartSchema)

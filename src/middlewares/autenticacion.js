@@ -2,8 +2,11 @@ import {criptografiador} from "../utils/criptografia.js"
 
 export function autenticacionRedirect (req,res,next){
     const token = req.signedCookies.authToken
-    const user = criptografiador.decodificarToken(token)
-    if(!user.password && !req.session.user) return res.redirect("/login")
+    var user
+    if(token){
+       user = criptografiador.decodificarToken(token)
+    }
+    if(!user && !req.session.user) return res.redirect("/login")
     next()
 }
 
