@@ -68,6 +68,9 @@ app.use(multer({
 
 app.use("/api", apiRouter)
 app.use("/", routerViews)
+app.use("/rama", (req,res) => {
+    res.send("Rama PreProduction!!!!!")
+})
 
 const specs = swaggerJsdoc(swaggerOptions)
 app.use("/apidocs", swaggerUi.serve, swaggerUi.setup(specs))
