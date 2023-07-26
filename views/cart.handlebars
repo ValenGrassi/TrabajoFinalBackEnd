@@ -5,6 +5,9 @@
 <ul> 
     {{#each carrito.products}}
         <li>{{this.title}}: ${{this.price}}, cantidad: {{this.quantity}}u.</li>
+        <form id="formDeleteProduct" data-cartid="{{../carrito._id}}" data-productid="{{this._id}}">
+            <button type="submit">Eliminar del carrito</button>
+        </form>
         <br>
     {{/each}}
 </ul>
@@ -12,3 +15,4 @@
 <form action="/api/carts/{{carrito._id}}/purchase" method="post">
     <button type="submit">Comprar</button>
 </form>
+<script src="/js/products.js"></script>
