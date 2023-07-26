@@ -1,0 +1,14 @@
+<h1>Mi Carrito</h1> 
+<a href="/realtimeproducts">Volver a los productos</a> <br>
+<p>id:{{carrito._id}}</p>
+<u>Productos:</u>
+<ul> 
+    {{#each carrito.products}}
+        <li>{{this.title}}: ${{this.price}}, cantidad: {{this.quantity}}u.</li>
+        <br>
+    {{/each}}
+</ul>
+<h2>Total: ${{carrito.totalPrice}}</h2>
+<form action="/api/carts/{{carrito._id}}/purchase" method="post">
+    <button type="submit">Comprar</button>
+</form>

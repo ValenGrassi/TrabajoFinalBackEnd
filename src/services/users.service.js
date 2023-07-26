@@ -76,6 +76,24 @@ class UsuariosService{
         const actualizado = await userRepository.actualizarUnoConValor({email: user.email}, userDTO, {returnDto: true})
         return actualizado
     }
+
+    async eliminarUsuariosViejos(users){
+        const deletedUsers = users.filter(user => {
+            return user.last_connection
+        })
+        const hoy = new Date()
+        const haceDosDias = new Date(hoy.getTime() - 2 * 24 * 60 * 60 * 1000);
+
+        const activeUsers = deletedUsers.filter(user => {
+            const [month, day, year] = user.last_connection.split('/');
+            const lastConnectionDate = new Date(`${year}-${month}-${day}`);
+            if(lastConnectionDate > haceDosDias){
+                return user
+            }
+        })
+        
+        return activeUsers
+    }
 }
 
 export const usuariosService = new UsuariosService()

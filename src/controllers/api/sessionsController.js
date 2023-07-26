@@ -31,15 +31,20 @@ export async function loginPostController(req,res,next){
         const rol = "admin"
         const user = await userRepository.encontrarUnoConValor({email}, { returnDto: true })
         if(user){
-            if(authenticationService.login(email,password)){
-                req.session.user = {
+            try {
+                const usuarioLogueado = await authenticationService.login(email,password)
+                if(usuarioLogueado){req.session.user = {
                 name: `${user.nombre} ${user.apellido}`,
                 email: user.email,
                 age: user.edad,
-                rol: user.rol
-            };
-            req.logger.info("rol del usuario: " + user.rol)
-        }}
+                rol: user.rol}
+                req.logger.info("rol del usuario: " + user.rol)
+                usuariosService.actualizarUltimaVez(req.session.user)
+                res.sendStatus(201)}
+            } catch (error) {
+                res.status(401).json({status:"error", description: "el mail o la contraseña son incorrectos"})
+            }
+        }
 
         if(!user && email == "adminCoder@coder.com" && password == "adminCod3r123"){
             req.session.user = {
@@ -49,15 +54,9 @@ export async function loginPostController(req,res,next){
             rol: rol,
             }
             req.logger.info("rol del usuario: " + rol)
-
-        }       
-        
-        if(!user && email != "adminCoder@coder.com" && password != "adminCod3r123"){
-            throw new Error(errores.INCORRECT_CREDENTIALS)
         }
-        res.sendStatus(201)
     } catch (error) {
-        next(error)
+        res.status(401).json({status:"error", description: "el mail o la contraseña son incorrectos"})
         req.logger.fatal(error)
     }
 }
@@ -69,4 +68,13 @@ export async function tokenPostController(req,res,next){
     } catch (error) {
         next(error)
     }
+}
+
+export async function logoutController(req, res){
+    const user = req.session.user
+    await usuariosService.actualizarUltimaVez(user)
+    req.session.destroy(err => {
+        if (err) return res.status(500).send({ status: "error", error: "Couldn't logout" })
+        res.redirect('/login')
+    })
 }

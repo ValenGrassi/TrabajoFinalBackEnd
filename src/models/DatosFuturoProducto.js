@@ -43,7 +43,7 @@ function validarStock(valor){
 }
 
 export class DatosFuturoProducto{
-    constructor({status = true,thumbnail = "sin imagen",title,description ="sin descripcion",price,code=faker.number.int({min: 100, max: 1000}),stock,category="sin categoria"}){
+    constructor({status = true,thumbnail = "sin imagen",title,description ="sin descripcion",price,code=faker.number.int({min: 100, max: 1000}),stock,category="sin categoria", owner="admin"}){
         this.status = status
         this.thumbnail = validarThumbnail(thumbnail)
         this.title = validarTitulo(title)
@@ -52,6 +52,7 @@ export class DatosFuturoProducto{
         this.code = validarCodigo(code)
         this.stock = validarStock(stock)
         this.category = validarCategoria(category)
+        this.owner = owner
     }
 
     toCart(){

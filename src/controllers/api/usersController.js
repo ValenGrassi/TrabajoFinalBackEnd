@@ -15,7 +15,16 @@ export async function postUsers(req, res,next){
 export async function getUsers(req,res,next){
     try {
         const users = await userManager.encontrar()
-        res.send(users)
+        console.log(users)
+        const usersReturn = users.map(user => {
+            return {
+                username: user.nombre,
+                mail: user.email,
+                rol: user.rol,
+            }
+        
+        })
+        return res.status(200).json(usersReturn)
     } catch (error) {
         next(error)
     }
@@ -64,6 +73,18 @@ export async function postDocuments(req,res,next){
         const {originalname, path} = files
         const userCambiado = await usuariosService.actualizarDocumentos(user, originalname, path)
         res.status(201).send(`${user.email} subió un documento.`)
+    } catch (error) {
+        next(error)
+        console.log(error)
+    }
+}
+
+export async function deleteUsers(req,res,next){
+    try {
+        const users = await userManager.encontrar()
+        const usuariosActivos = await usuariosService.eliminarUsuariosViejos(users)
+        await userManager.actualizarColeccion(usuariosActivos)
+        return res.status(200).json(usuariosActivos)
     } catch (error) {
         next(error)
         console.log(error)

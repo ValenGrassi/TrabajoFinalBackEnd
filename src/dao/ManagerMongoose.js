@@ -5,6 +5,12 @@ export class ManagerMongoose {
         this.collection = mongoose.model(nombreCollecion, new mongoose.Schema(schema, {versionKey: false}));
     }
 
+    async actualizarColeccion(cambio){
+        await this.collection.deleteMany({});
+        return await this.collection.insertMany(cambio)
+        
+    }
+
     async guardar(registro){
        return await this.collection.create(registro)
     }
@@ -37,9 +43,8 @@ export class ManagerMongoose {
         return await this.collection.updateOne(id, cambio).lean()
     }
     
-
     async eliminarUno(id){
-        return await this.collection.findOneAndDelete(id)
+        return await this.collection.findOneAndDelete({"_id": id})
     }
 
     async paginar(criterio, opciones){

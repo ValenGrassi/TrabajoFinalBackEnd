@@ -9,7 +9,8 @@ const userSchema = new Schema({
         password: {type: String, required: true},
         rol: {type: String, default: "usuario"},
         last_connection: {type: String, required: true},
-        documents: {type: Array}
+        documents: {type: Array},
+        cartId: {type: String}
     })    
 
 export const userManager = new ManagerMongoose("users", userSchema)

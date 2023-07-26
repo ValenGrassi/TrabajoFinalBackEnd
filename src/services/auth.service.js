@@ -11,13 +11,14 @@ class AuthenticationService {
         try {
             const user = await userManager.encontrarUnoConValor({email})
             const compare = criptografiador.comparar(password, user.password)
-            if(!compare){throw new Error(errores.INCORRECT_CREDENTIALS)}
+            if(!compare){
+                throw new Error(errores.INCORRECT_CREDENTIALS)
+            } 
             criptografiador.generarToken(user)
             return user
         } catch (error) {
             throw new Error(errores.INCORRECT_CREDENTIALS)
         }
-        
     }
 }
 

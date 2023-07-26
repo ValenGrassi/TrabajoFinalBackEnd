@@ -16,7 +16,7 @@ import multer from "multer"
 
 export const app = express()
 
-app.engine("handlebars", engine())
+app.engine("handlebars", engine({runtimeOptions: {allowProtoPropertiesByDefault: true}}))
 app.set("views", "./views")
 app.set("view engine", "handlebars")
 app.use(express.static("public"))
@@ -35,7 +35,7 @@ app.use(session({
 app.use(cookieParser(COOKIE_SECRET))
 
 app.use(logger)
-const storage = multer.diskStorage({
+const documents = multer.diskStorage({
     destination: "public/documents",
     filename: (req,file,next) => {
         next(null, file.originalname)
@@ -57,7 +57,7 @@ const products = multer.diskStorage({
 })
 
 app.use(multer({
-    storage: profile,products,storage,
+    storage: profile,products,documents,
 }).fields(
     [
         {name:"profile"}, 

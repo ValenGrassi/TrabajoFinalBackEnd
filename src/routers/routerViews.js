@@ -1,7 +1,10 @@
 import {Router} from "express"
+import { cartManager } from "../dao/cartManager.js";
 import { productManager } from "../dao/productManager.js";
 import { autenticacionLogin, autenticacionRedirect } from "../middlewares/autenticacion.js";
+import { DatosFuturoCarrito } from "../models/DatosFuturoCarrito.js";
 import { userRepository } from "../repositories/usersRepository.js";
+import { cartService } from "../services/carts.service.js";
 
 const routerViews = Router()
 
@@ -31,9 +34,20 @@ routerViews.get("/user",autenticacionLogin, async (req,res,next) => {
     res.render("user", {pageTitle: "User", user: req.session.user})
 })
 
-routerViews.get("/realtimeproducts", async (req,res) => {
+routerViews.get("/realtimeproducts",autenticacionRedirect, async (req,res) => {
     const productos = await productManager.encontrar()
-    res.render("realTimeProducts", {hayProductos: productos.length > 0, productos})
+    if(!req.session.user?.cartId){
+        const datosFuturoCarrito = new DatosFuturoCarrito()
+        const carritoRegistrado = await cartService.registrar(datosFuturoCarrito)
+        req.session.user.cartId = carritoRegistrado._id
+    }
+    productos.forEach(producto => producto.cartId = req.session.user.cartId)
+    res.render("realTimeProducts", {productos})
+})
+
+routerViews.get("/cart", autenticacionRedirect, async (req,res) => {
+    const carrito = await cartManager.encontrarUnoConId(req.session.user.cartId)
+    res.render("cart", {pageTitle: "Cart", carrito: carrito})
 })
 
 export default routerViews

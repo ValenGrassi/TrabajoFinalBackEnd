@@ -24,6 +24,8 @@ export function UsuarioPremium(req,res,next){
     if(user.rol != "usuario" && user.rol != "premium"){
         throw new Error(errores.NOT_AUTHORIZED)
     } 
+    next()
+
 }
 
 export function Premium(req,res,next){
@@ -32,4 +34,5 @@ export function Premium(req,res,next){
     if(user.rol != "admin" && user.rol != "premium"){
         throw new Error(errores.NOT_AUTHORIZED)
     }
+    next()
 }
