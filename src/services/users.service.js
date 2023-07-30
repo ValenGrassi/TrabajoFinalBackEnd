@@ -1,4 +1,5 @@
 import { resetTokensManager } from "../dao/resetTokenManager.js";
+import { userManager } from "../dao/usersManager.js";
 import { errores } from "../errors/errorHandler.js";
 import { ResetToken } from "../models/ResetToken.js";
 import { userRepository } from "../repositories/usersRepository.js";
@@ -77,7 +78,8 @@ class UsuariosService{
         return actualizado
     }
 
-    async eliminarUsuariosViejos(users){
+    async eliminarUsuariosViejos(){
+        const users = await userManager.encontrar()
         const deletedUsers = users.filter(user => {
             return user.last_connection
         })
@@ -91,8 +93,38 @@ class UsuariosService{
                 return user
             }
         })
+
+        await userManager.actualizarColeccion(activeUsers)
         
         return activeUsers
+    }
+
+    async getUsersService(){
+        const users = await userManager.encontrar()
+        const usersReturn = users.map(user => {
+            return {
+                username: user.nombre,
+                mail: user.email,
+                rol: user.rol,
+            }
+        })
+        return usersReturn
+    }
+
+    async premiumUsersService(idBuscado){
+        const user = await userRepository.encontrarUnoConValor({_id:idBuscado}, {returnDto: true})
+        if(!user){
+            throw new Error(errores.INCORRECT_CREDENTIALS)
+        }
+        if(user.rol == "usuario" && user.documents){
+            user.rol = "premium"
+        }else if(user.rol == "premium"){
+            user.rol = "usuario"
+        } else {
+            throw new Error("el perfil no tiene ningun documento")
+        }
+        const userCambiado = await userRepository.actualizarUnoConValor({_id:idBuscado}, user, {returnDto: true})
+        return user
     }
 }
 

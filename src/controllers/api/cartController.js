@@ -1,9 +1,6 @@
 import { DatosFuturoCarrito } from "../../models/DatosFuturoCarrito.js";
 import { cartService } from "../../services/carts.service.js";
 import { cartManager } from "../../dao/cartManager.js"
-import { productManager } from "../../dao/productManager.js";
-import { Ticket } from "../../models/Ticket.js";
-import { ticketManager } from "../../dao/ticketManager.js";
 
 export async function cartGetController(req,res,next){
     try {
@@ -57,9 +54,7 @@ export async function deleteProductFromCartController(req,res,next){
 
 export async function deleteCartController(req,res,next){
     try {
-        const idCarrito = req.params.cid;
-        const carrito = await cartManager.encontrarUnoConId(idCarrito)
-        const eliminado = await cartManager.eliminarUno({_id: carrito.id})
+        const eliminado = await cartService.deleteCartService(req.params.cid)
         res.status(201).json(eliminado)
     } catch (error) {
         next(error)
@@ -68,17 +63,12 @@ export async function deleteCartController(req,res,next){
 
 export async function purchaseCartController(req,res,next){
     try {
-        const idCarrito = req.params.cid;
-        const carrito = await cartManager.encontrarUnoConId(idCarrito)
-        if(carrito){
-            const ticket = new Ticket({amount:carrito.totalPrice,purchaser:req.session.user.email})
-            const ticketGuardado = await ticketManager.guardar(ticket)
-            cartManager.eliminarUno({_id: carrito.id})
+        const ticket = await cartService.purchaseCartService(req.params.cid)
+        if(ticket){
             req.session.user.cartId = null
             res.status(201).send(ticketGuardado)
         }
         // await emailService.send(req.session.user.email, mensaje)
-        
     } catch (error) {
         next(error)
         console.log(error)

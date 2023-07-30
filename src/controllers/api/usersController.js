@@ -1,6 +1,3 @@
-import { userManager } from "../../dao/usersManager.js"
-import { errores } from "../../errors/errorHandler.js"
-import { userRepository } from "../../repositories/usersRepository.js"
 import { usuariosService } from "../../services/users.service.js"
 import { criptografiador } from "../../utils/criptografia.js"
 
@@ -14,16 +11,7 @@ export async function postUsers(req, res,next){
 
 export async function getUsers(req,res,next){
     try {
-        const users = await userManager.encontrar()
-        console.log(users)
-        const usersReturn = users.map(user => {
-            return {
-                username: user.nombre,
-                mail: user.email,
-                rol: user.rol,
-            }
-        
-        })
+        const usersReturn = await usuariosService.getUsersService()
         return res.status(200).json(usersReturn)
     } catch (error) {
         next(error)
@@ -43,21 +31,8 @@ export async function putUsers(req,res,next){
 
 export async function premiumUsers(req,res,next){
     try {
-        const idBuscado = req.params.uid;
-        const user = await userRepository.encontrarUnoConValor({_id:idBuscado}, {returnDto: true})
-        if(!user){
-            throw new Error(errores.INCORRECT_CREDENTIALS)
-        }
-        if(user.rol == "usuario" && user.documents){
-            user.rol = "premium"
-        }else if(user.rol == "premium"){
-            user.rol = "usuario"
-        } else {
-            throw new Error("el perfil no tiene ningun documento")
-        }
-        console.log(user)
-        const userCambiado = await userRepository.actualizarUnoConValor({_id:idBuscado}, user, {returnDto: true})
-        res.status(201).send(`${user.email} cambió de rol`)
+        const usuarioCambiado = usuariosService.premiumUsersService(req.params.uid)
+        res.status(201).send(`${usuarioCambiado.email} cambió de rol`)
     } catch (error) {
         next(error)
     }
@@ -81,9 +56,7 @@ export async function postDocuments(req,res,next){
 
 export async function deleteUsers(req,res,next){
     try {
-        const users = await userManager.encontrar()
-        const usuariosActivos = await usuariosService.eliminarUsuariosViejos(users)
-        await userManager.actualizarColeccion(usuariosActivos)
+        const usuariosActivos = await usuariosService.eliminarUsuariosViejos()
         return res.status(200).json(usuariosActivos)
     } catch (error) {
         next(error)

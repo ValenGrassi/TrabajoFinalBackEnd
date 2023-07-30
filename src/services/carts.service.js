@@ -1,11 +1,15 @@
 import { cartManager } from "../dao/cartManager.js";
 import { productManager } from "../dao/productManager.js";
+import { ticketManager } from "../dao/ticketManager.js";
+import { Ticket } from "../models/Ticket.js";
 
 class CartService{
+
     async registrar(datosFuturoCarrito){
         const carritoRegistrado = await cartManager.guardar(datosFuturoCarrito);
         return carritoRegistrado;
     }
+
     async addProductToCartService(idProducto, idCarrito){
         const carrito = await cartManager.encontrarUnoConId(idCarrito)
         if(!carrito){throw new Error("el carrito no existe")}
@@ -34,6 +38,7 @@ class CartService{
 
         return carrito
     }
+
     async deleteProductFromCartService(idProducto, idCarrito){
         const producto = await productManager.encontrarUnoConId(idProducto)
         if(!producto) throw new Error("no se encontro producto")
@@ -49,9 +54,25 @@ class CartService{
         await cartManager.actualizarUno({_id: idCarrito}, carrito)
         producto.stock++
         await productManager.actualizarUno({_id: idProducto}, producto)
-        
+
         return carrito
     }
+
+    async deleteCartService(idCarrito){
+        const carrito = await cartManager.encontrarUnoConId(idCarrito)
+        const eliminado = await cartManager.eliminarUno({_id: carrito.id})
+
+        return eliminado
+    }
+
+    async purchaseCartService(idCarrito){
+        const carrito = await cartManager.encontrarUnoConId(idCarrito)
+        const ticket = new Ticket({amount:carrito.totalPrice,purchaser:req.session.user.email})
+        const ticketGuardado = await ticketManager.guardar(ticket)
+        cartManager.eliminarUno({_id: carrito.id})
+        return ticketGuardado
+    }
+    
 }
 
 export const cartService = new CartService()

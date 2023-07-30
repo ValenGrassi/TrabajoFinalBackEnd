@@ -2,22 +2,26 @@ import { errores } from "../../errors/errorHandler.js"
 import { DatosFuturoUsuario } from "../../models/DatosFuturoUser.js"
 import { userRepository } from "../../repositories/usersRepository.js"
 import { authenticationService } from "../../services/auth.service.js"
+import { sessionsService } from "../../services/sessions.service.js"
 import { usuariosService } from "../../services/users.service.js"
 
 export async function registerPostController(req, res, next) {
     try {
-        const email = req.body.email
         const fecha = new Date().toLocaleDateString()
-        const existe = await userRepository.encontrarUnoConValor({email:email}, { returnDto: true })
+       
+        const existe = await sessionsService.verificarExistenciaUsuario(req.body.email)
         req.logger.error(existe)
-        if(existe) {
+
+        if(existe !== null){
             return new Error(errores.EXISTING_MAIL)
         }
 
         const datosFuturoUsuario = new DatosFuturoUsuario(req.body).toDto()
         req.logger.info(datosFuturoUsuario)
         datosFuturoUsuario.last_connection = fecha
-        const usuarioRegistrado = await usuariosService.registrar(datosFuturoUsuario)
+        
+        await usuariosService.registrar(datosFuturoUsuario)
+
         return res.status(201).send({status: "success", message: "Usuario Registrado!"})
     }
     catch (error) {
